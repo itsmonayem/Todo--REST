@@ -31,6 +31,12 @@ public class TodoController {
     }
 
 
+    @GetMapping("/todo/{id}")
+    public ResponseEntity<Optional<Todo>> getTodoById(@PathVariable("id") int id) {
+        return this.todoService.getTodoById(id);
+    }
+
+
     @PostMapping("/todo")
     public Todo addTodo(@RequestBody Todo todo) {
         return this.todoService.addTodo(todo);
@@ -46,5 +52,13 @@ public class TodoController {
             return new ResponseEntity<>("No such todo", HttpStatus.NOT_FOUND);
         }
     }
+
+    @PutMapping("/todo/{id}")
+    public ResponseEntity<Todo> updateTodo(@RequestBody Todo todo, @PathVariable("id") int id) {
+        return this.todoService.updateTodo(todo, id);
+    }
+
+
+
 
 }

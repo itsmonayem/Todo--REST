@@ -3,10 +3,13 @@ package com.spring.todo.service;
 import com.spring.todo.dao.TodoRepository;
 import com.spring.todo.entities.Todo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class TodoService {
@@ -23,6 +26,15 @@ public class TodoService {
         return (List<Todo>) this.todoRepository.findAll();
     }
 
+    public ResponseEntity<Optional<Todo>> getTodoById(int id) {
+        if(this.todoRepository.existsById(id)) {
+            Optional<Todo> todo = this.todoRepository.findById(id);
+            return new ResponseEntity<>(todo,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null,HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     public Todo addTodo (Todo todo) {
         todo.setDate(new Date());
@@ -36,6 +48,17 @@ public class TodoService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public ResponseEntity<Todo> updateTodo(Todo todo, int id) {
+        if(this.todoRepository.existsById(id)) {
+            todo.setId(id);
+            todo.setDate(this.todoRepository.findById(id).get().getDate());
+            this.todoRepository.save(todo);
+            return new ResponseEntity<>(todo, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         }
     }
 }
